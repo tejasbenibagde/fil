@@ -120,3 +120,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .container {
+    @apply mx-auto px-8;
+  }
+
+  /* @screen 2xl {
+    .container {
+      max-width: 1400px;
+    }
+  } */
+}

@@ -10,14 +10,14 @@ export default function ApiDocsPage() {
 
         <Card className="p-6 mb-8">
           <div className="prose max-w-none">
-            <h2 className="text-2xl font-bold mb-4">Getting Started with the Pix API</h2>
+            <h2 className="text-2xl font-bold mb-4">Getting Started with the Fil API</h2>
             <p className="mb-4">
-              The Pix API allows developers to integrate our file processing tools into their own applications. This
+              The Fil API allows developers to integrate our file processing tools into their own applications. This
               documentation provides information on how to use the API.
             </p>
             <h3 className="text-xl font-bold mt-6 mb-3">Authentication</h3>
             <p className="mb-4">
-              To use the Pix API, you'll need an API key. You can obtain one by registering for a developer account.
+              To use the Fil API, you'll need an API key. You can obtain one by registering for a developer account.
             </p>
             <div className="bg-muted p-4 rounded-md mb-4">
               <pre className="text-sm overflow-x-auto">
@@ -44,7 +44,7 @@ export default function ApiDocsPage() {
             <p className="mb-4">All API endpoints are relative to the following base URL:</p>
             <div className="bg-muted p-4 rounded-md mb-4">
               <pre className="text-sm overflow-x-auto">
-                <code>https://api.pixtools.com/v1</code>
+                <code>https://api.Filtools.com/v1</code>
               </pre>
             </div>
           </div>

@@ -13,7 +13,7 @@ export default function DocsPage() {
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">Getting Started</h2>
             <p className="mb-4">
-              Welcome to the Pix documentation! Here you'll find information about how to use our tools, how they work,
+              Welcome to the Fil documentation! Here you'll find information about how to use our tools, how they work,
               and how you can contribute to the project.
             </p>
             <p>
@@ -59,7 +59,7 @@ export default function DocsPage() {
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">Privacy & Security</h2>
             <p className="mb-4">
-              At Pix, we take your privacy and security seriously. Here's how we protect your data:
+              At Fil, we take your privacy and security seriously. Here's how we protect your data:
             </p>
             <ul className="space-y-2 mb-4">
               <li>All file processing happens directly in your browser</li>
@@ -83,7 +83,7 @@ export default function DocsPage() {
             <Code className="h-12 w-12 mb-4 text-primary" />
             <h2 className="text-xl font-bold mb-2">Contributing</h2>
             <p className="text-muted-foreground mb-4">
-              Pix is an open-source project, and we welcome contributions from the community. Whether you're fixing
+              Fil is an open-source project, and we welcome contributions from the community. Whether you're fixing
               bugs, adding new features, or improving documentation, your help is appreciated!
             </p>
             <Button asChild>

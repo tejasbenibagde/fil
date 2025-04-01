@@ -5,14 +5,14 @@ import { Github, Heart, Code, Users } from "lucide-react";
 export default function AboutPage() {
   return (
     <div className="container py-10">
-      <h1 className="text-3xl font-bold mb-8">About Pix</h1>
+      <h1 className="text-3xl font-bold mb-8">About Fil</h1>
 
       <div className="max-w-3xl mx-auto">
         <Card className="p-6 mb-8">
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
             <p className="mb-4">
-              Pix was created with a simple mission: to provide free,
+              Fil was created with a simple mission: to provide free,
               open-source file utilities that respect your privacy and don't
               compromise on quality or usability.
             </p>
@@ -71,7 +71,7 @@ export default function AboutPage() {
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">Our Team</h2>
             <p className="mb-6">
-              Pix is maintained by a small team of developers passionate about
+              Fil is maintained by a small team of developers passionate about
               creating useful, accessible tools for everyone.
             </p>
 
@@ -101,7 +101,7 @@ export default function AboutPage() {
               <li>
                 <strong>GitHub Issues:</strong>{" "}
                 <Link
-                  href="https://github.com/issues"
+                  href="https://github.com/tejasbenibagde/fil/issues"
                   className="text-primary hover:underline"
                 >
                   Report bugs or suggest features
@@ -110,20 +110,11 @@ export default function AboutPage() {
               <li>
                 <strong>Email:</strong>{" "}
                 <a
-                  href="mailto:contact@example.com"
+                  href="mailto:tejas.benibagde@gmail.com"
                   className="text-primary hover:underline"
                 >
-                  contact@example.com
+                  tejas.benibagde@gmail.com
                 </a>
-              </li>
-              <li>
-                <strong>Twitter:</strong>{" "}
-                <Link
-                  href="https://twitter.com"
-                  className="text-primary hover:underline"
-                >
-                  @PixTools
-                </Link>
               </li>
             </ul>
           </div>

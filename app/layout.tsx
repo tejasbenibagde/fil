@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Pix - Free Open Source File Utilities",
+  title: "Fil - Free Open Source File Utilities",
   description:
     "A collection of free, open-source tools to work with your files. No ads, no tracking, just utilities.",
 };

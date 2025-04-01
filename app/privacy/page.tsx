@@ -14,7 +14,7 @@ export default function PrivacyPage() {
 
             <h2 className="text-2xl font-bold mb-4">Introduction</h2>
             <p className="mb-4">
-              At Pix, we are committed to protecting your privacy. This Privacy Policy explains how we handle your data
+              At Fil, we are committed to protecting your privacy. This Privacy Policy explains how we handle your data
               when you use our website and services.
             </p>
 

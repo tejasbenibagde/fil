@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fil - Open Source File Utilities
+
+Fil is a free, open-source collection of file utility tools that run entirely in your browser. It provides a range of tools for working with PDFs, images, archives, audio, video, and more.
+
+## Features
+
+- **PDF Tools**: Compress, merge, split, and convert PDF files
+- **Image Tools**: Resize, compress, convert, and edit images
+- **Archive Tools**: Create, extract, and convert archive files
+- **Audio Tools**: Convert, compress, trim, and merge audio files
+- **Video Tools**: Convert, compress, trim videos, and add subtitles
+- **Other Tools**: Text formatting, code beautification, spreadsheet conversion, and more
+
+## Key Benefits
+
+- **100% Free**: All tools are completely free to use with no hidden fees
+- **Privacy-Focused**: All processing happens in your browser - files are never uploaded to our servers
+- **No Ads**: Clean, distraction-free interface
+- **Open Source**: Fully transparent and community-driven
+
+## Technologies Used
+
+- **Next.js**: React framework for server-rendered applications
+- **React**: JavaScript library for building user interfaces
+- **TypeScript**: Typed JavaScript for better code quality
+- **Tailwind CSS**: Utility-first CSS framework
+- **shadcn/ui**: High-quality UI components built with Radix UI and Tailwind CSS
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18.0.0 or later
+- npm or yarn
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/fil.git
+   cd Fil
+   ```
+2. Install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+       npm install  # or yarn install
+   ```
 
-## Learn More
+3. Start the development server:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run dev  # or yarn dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Open your browser and go to:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+    http://localhost:3000
+   ```
 
-## Deploy on Vercel
+### Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! To contribute:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Fork the repository
+2. Create a new branch (git checkout -b feature-name)
+3. Make your changes and commit (git commit -m "Added new feature")
+4. Push to the branch (git push origin feature-name)
+5. Open a Pull Request
+
+### License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Contact
+
+For questions, issues, or suggestions, feel free to open an issue or reach out via email at tejas.benibagde@gmail.com

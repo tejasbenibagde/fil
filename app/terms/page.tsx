@@ -14,7 +14,7 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold mb-4">Introduction</h2>
             <p className="mb-4">
-              Welcome to Pix. By using our website and services, you agree to these Terms of Service. Please read them
+              Welcome to Fil. By using our website and services, you agree to these Terms of Service. Please read them
               carefully.
             </p>
 
@@ -41,11 +41,11 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold mb-4">Intellectual Property</h2>
             <p className="mb-4">
-              Pix is open-source software released under the MIT License. The source code is available on GitHub. You
+              Fil is open-source software released under the MIT License. The source code is available on GitHub. You
               are free to use, modify, and distribute the code according to the terms of the MIT License.
             </p>
             <p className="mb-4">
-              The Pix name, logo, and branding are the property of Pix and may not be used without permission.
+              The Fil name, logo, and branding are the property of Fil and may not be used without permission.
             </p>
 
             <h2 className="text-2xl font-bold mb-4">Disclaimer of Warranties</h2>
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold mb-4">Limitation of Liability</h2>
             <p className="mb-4">
-              To the fullest extent permitted by law, Pix shall not be liable for any indirect, incidental, special,
+              To the fullest extent permitted by law, Fil shall not be liable for any indirect, incidental, special,
               consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or
               indirectly, or any loss of data, use, goodwill, or other intangible losses.
             </p>

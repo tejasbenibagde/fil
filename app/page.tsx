@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
-import { ToolList, tools } from "./tools/page";
+import ToolList from "./tools/tool-list";
+import tools from "./tools/tools-data";
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -9,7 +10,7 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <Into
+              <Intro
                 title="Free Open Source File Utilities"
                 desc="A collection of free, open-source tools to work with your
                   files. No ads, no tracking, just utilities."
@@ -28,7 +29,7 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <Into
+              <Intro
                 title="Our Tools"
                 desc="Choose from our wide range of file utilities to make your work
                   easier."
@@ -42,7 +43,7 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <Into
+              <Intro
                 title="Open Source"
                 desc="All our tools are open source and free to use. You can
                   contribute to the project on GitHub."
@@ -67,7 +68,7 @@ export default function Home() {
   );
 }
 
-const Into = ({ title, desc }: { title: string; desc: string }) => {
+const Intro = ({ title, desc }: { title: string; desc: string }) => {
   return (
     <div className="space-y-2">
       <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">

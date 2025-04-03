@@ -13,7 +13,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
             <p className="mb-4">
               Fil was created with a simple mission: to provide free,
-              open-source file utilities that respect your privacy and don't
+              open-source file utilities that respect your privacy and don&apos;t
               compromise on quality or usability.
             </p>
             <p className="mb-4">
@@ -41,7 +41,7 @@ export default function AboutPage() {
               </p>
               <Button variant="outline" asChild>
                 <Link
-                  href="https://github.com"
+                  href="https://github.com/tejasbenibagde/fil"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -94,7 +94,7 @@ export default function AboutPage() {
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
             <p className="mb-4">
-              Have questions, suggestions, or found a bug? We'd love to hear
+              Have questions, suggestions, or found a bug? We&apos;d love to hear
               from you!
             </p>
             <ul className="space-y-2">

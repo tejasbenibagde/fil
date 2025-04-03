@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Image, ImagePlus, Upload, ImageDown, Crop } from "lucide-react"
+import { ImagePlus, Upload, ImageDown, Crop, Images } from "lucide-react"
 
 export default function ImageTools() {
   const imageTools = [
@@ -24,7 +24,7 @@ export default function ImageTools() {
       href: "/tools/image/convert",
     },
     {
-      icon: <Image className="h-8 w-8" />,
+      icon: <Images className="h-8 w-8" />,
       title: "Edit Image",
       description: "Basic image editing tools",
       href: "/tools/image/edit",

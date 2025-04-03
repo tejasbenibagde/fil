@@ -37,7 +37,7 @@ Fil is a free, open-source collection of file utility tools that run entirely in
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/fil.git
+   git clone https://github.com/tejasbenibagde/fil.git
    cd Fil
    ```
 2. Install dependencies:

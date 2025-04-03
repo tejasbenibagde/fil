@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/card";
 import {
   FileText,
-  Image,
   FileArchive,
   FileAudio,
   FileVideo,
   FileCog,
+  Images,
 } from "lucide-react";
 const tools = [
   {
@@ -23,7 +23,7 @@ const tools = [
     href: "/tools/pdf",
   },
   {
-    icon: <Image className="h-8 w-8" />,
+    icon: <Images className="h-8 w-8" />,
     title: "Image Tools",
     description: "Resize, compress, and convert image files",
     href: "/tools/image",

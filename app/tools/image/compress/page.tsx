@@ -10,6 +10,7 @@ import { Upload, ImageIcon, Download, Trash2 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import Image from "next/image"
 
 export default function CompressImage() {
   const [file, setFile] = useState<File | null>(null)
@@ -139,7 +140,14 @@ export default function CompressImage() {
               <div className="flex items-center p-4 border rounded-lg">
                 <div className="h-16 w-16 mr-4 overflow-hidden rounded-md bg-muted flex items-center justify-center">
                   {preview ? (
-                    <img src={preview || "/placeholder.svg"} alt="Preview" className="h-full w-full object-cover" />
+                    <Image 
+                    src={preview || "/placeholder.svg"} 
+                    alt="Preview" 
+                    className="h-full w-full object-cover" 
+                    width={500} // Adjust the width as needed
+                    height={500} // Adjust the height as needed
+                    layout="responsive" // Ensures responsiveness
+                  />
                   ) : (
                     <ImageIcon className="h-8 w-8 text-primary" />
                   )}

@@ -48,13 +48,6 @@ export function MobileNav() {
             About
           </Link>
           <Link
-            href="/docs"
-            className="text-sm font-medium transition-colors hover:text-primary"
-            onClick={() => setOpen(false)}
-          >
-            Documentation
-          </Link>
-          <Link
             href="/privacy"
             className="text-sm font-medium transition-colors hover:text-primary"
             onClick={() => setOpen(false)}

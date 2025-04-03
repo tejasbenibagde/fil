@@ -18,7 +18,7 @@ export default function PrivacyPage() {
               when you use our website and services.
             </p>
 
-            <h2 className="text-2xl font-bold mb-4">Information We Don't Collect</h2>
+            <h2 className="text-2xl font-bold mb-4">Information We Don&apos;t Collect</h2>
             <p className="mb-4">Our service is designed with privacy in mind. We do not:</p>
             <ul className="space-y-2 mb-4">
               <li>Collect or store your files</li>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
             <ul className="space-y-2 mb-4">
               <li>The file is processed locally in your browser</li>
               <li>The file is never sent to our servers</li>
-              <li>The file is not stored anywhere except temporarily in your browser's memory</li>
+              <li>The file is not stored anywhere except temporarily in your browser&apos;s memory</li>
               <li>Once you navigate away from the page or close your browser, the file is automatically removed</li>
             </ul>
 
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold mb-4">Changes to This Policy</h2>
             <p className="mb-4">
               We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new
-              Privacy Policy on this page and updating the "Last Updated" date.
+              Privacy Policy on this page and updating the &quot;Last Updated&quot; date.
             </p>
 
             <h2 className="text-2xl font-bold mb-4">Contact Us</h2>

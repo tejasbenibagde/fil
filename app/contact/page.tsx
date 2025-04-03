@@ -42,7 +42,7 @@ export default function ContactPage() {
             <Mail className="h-12 w-12 mb-4 text-primary" />
             <h2 className="text-2xl font-bold mb-2">Get in Touch</h2>
             <p className="text-muted-foreground">
-              Have questions, suggestions, or found a bug? We'd love to hear from you!
+              Have questions, suggestions, or found a bug? We&apos;d love to hear from you!
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export default function ContactPage() {
               <Check className="h-12 w-12 mb-4 text-green-500" />
               <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
               <p className="text-muted-foreground mb-4">
-                Thank you for contacting us. We'll get back to you as soon as possible.
+                Thank you for contacting us. We&apos;ll get back to you as soon as possible.
               </p>
               <Button onClick={() => setIsSubmitted(false)}>Send Another Message</Button>
             </div>

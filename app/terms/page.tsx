@@ -50,7 +50,7 @@ export default function TermsPage() {
 
             <h2 className="text-2xl font-bold mb-4">Disclaimer of Warranties</h2>
             <p className="mb-4">
-              Our services are provided "as is" without any warranties, express or implied. We do not guarantee that our
+              Our services are provided &quot;as is&quot; without any warranties, express or implied. We do not guarantee that our
               services will be error-free, secure, or available at all times.
             </p>
 
@@ -64,7 +64,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold mb-4">Changes to These Terms</h2>
             <p className="mb-4">
               We may update these Terms of Service from time to time. We will notify you of any changes by posting the
-              new Terms on this page and updating the "Last Updated" date.
+              new Terms on this page and updating the &quot;Last Updated&quot; date.
             </p>
 
             <h2 className="text-2xl font-bold mb-4">Contact Us</h2>

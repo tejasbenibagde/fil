@@ -1,10 +1,9 @@
-<div align="center">
-  <picture>
-    <source srcset="https://fil-beta.vercel.app/fil-white.svg" media="(prefers-color-scheme: light)" />
-    <source srcset="https://fil-beta.vercel.app/fil.svg" media="(prefers-color-scheme: dark)" />
-    <img src="https://fil-beta.vercel.app/fil.svg" width="200" alt="Fil Logo" />
-  </picture>
-</div>
+<p align="center">
+  <img src="https://fil-beta.vercel.app/fil.svg" width="200" alt="Fil Logo (Dark Mode)" />
+</p>
+<p align="center">
+  <img src="https://fil-beta.vercel.app/fil-white.svg" width="200" alt="Fil Logo (Light Mode)" />
+</p>
 
 # Compress. Convert. Create. — Meet FIL
 

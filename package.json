@@ -1,6 +1,8 @@
 {
   "name": "fil",
-  "version": "0.1.0",
+  "description": "A fast, open-source image compression tool built with Next.js and Sharp. No ads, no tracking — just clean utilities.",
+  "homepage": "https://fil-beta.vercel.app/",
+  "version": "1.0.0-beta.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -48,5 +50,16 @@
     "lint-staged": "^15.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "keywords": [
+    "image-compression",
+    "image-optimizer",
+    "sharp",
+    "nextjs",
+    "webtools",
+    "open-source",
+    "image-tools",
+    "image-resize",
+    "fil"
+  ]
 }

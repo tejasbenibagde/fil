@@ -1,4 +1,10 @@
-# Fil - Open Source File Utilities
+<picture>
+  <source srcset="https://fil-beta.vercel.app/fil-white.svg" media="(prefers-color-scheme: dark)" />
+  <source srcset="https://fil-beta.vercel.app/fil.svg" media="(prefers-color-scheme: light)" />
+  <img src="https://fil-beta.vercel.app/fil.svg" width="100" alt="Fil Logo" />
+</picture>
+
+# Compress. Convert. Create. — Meet FIL
 
 Fil is a free, open-source collection of file utility tools that run entirely in your browser. It provides a range of tools for working with PDFs, images, archives, audio, video, and more.
 

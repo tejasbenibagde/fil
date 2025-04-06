@@ -61,8 +61,8 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
             <p className="mb-4">If you have any questions about this Privacy Policy, please contact us at:</p>
             <p>
-              <a href="mailto:privacy@example.com" className="text-primary hover:underline">
-                privacy@example.com
+              <a href="mailto:tejas.benibagde@gmail.com" className="text-primary hover:underline">
+                tejas.benibagde@gmail.com
               </a>
             </p>
           </div>

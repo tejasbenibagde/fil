@@ -87,7 +87,7 @@ export default function NotFound() {
             <h3 className="font-medium">4. Submit a Pull Request</h3>
             <p className="text-sm text-muted-foreground">Push your changes and create a pull request on GitHub.</p>
             <Button size="sm" className="w-full" asChild>
-              <Link href="/docs" target="_blank" rel="noreferrer">
+              <Link href="/about" target="_blank" rel="noreferrer">
                 View Contribution Guidelines
               </Link>
             </Button>

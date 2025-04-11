@@ -508,10 +508,10 @@ export default function ResizeImage() {
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex gap-4 flex-wrap">
                 {!isComplete ? (
                   <Button
-                    className="w-full"
+                    className="flex-1"
                     onClick={handleResize}
                     disabled={isProcessing || (!width && !height)}
                   >
@@ -525,7 +525,7 @@ export default function ResizeImage() {
                     )}
                   </Button>
                 ) : (
-                  <Button className="w-full" asChild>
+                  <Button className="flex-1" asChild>
                     <a href={resizedImage || "#"} download={resizedFileName}>
                       <Download className="mr-2 h-4 w-4" />
                       Download Resized Image
@@ -536,7 +536,6 @@ export default function ResizeImage() {
                   variant="outline"
                   onClick={handleReset}
                   disabled={isProcessing}
-                  className="w-full sm:w-auto"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Reset

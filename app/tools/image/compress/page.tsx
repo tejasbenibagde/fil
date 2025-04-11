@@ -1,111 +1,110 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Slider } from "@/components/ui/slider"
-import { Upload, Download, Trash2, RefreshCw } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
-import NextImage from "next/image"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Download, Trash2, RefreshCw } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import NextImage from "next/image";
+import { FileUploadZone } from "@/components/layout/file-upload-zone";
 
 export default function CompressImage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [quality, setQuality] = useState(80)
-  const [format, setFormat] = useState("original")
-  const [width, setWidth] = useState<number | "">("")
-  const [height, setHeight] = useState<number | "">("")
-  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [isComplete, setIsComplete] = useState(false)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [compressedImage, setCompressedImage] = useState<string | null>(null)
+  const [file, setFile] = useState<File | null>(null);
+  const [quality, setQuality] = useState(80);
+  const [format, setFormat] = useState("original");
+  const [width, setWidth] = useState<number | "">("");
+  const [height, setHeight] = useState<number | "">("");
+  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [compressedImage, setCompressedImage] = useState<string | null>(null);
   const [compressionStats, setCompressionStats] = useState<{
-    originalSize: number
-    compressedSize: number
-    compressionRatio: number
-    width?: number
-    height?: number
-    format?: string
-  } | null>(null)
-  const [error, setError] = useState<string | null>(null)
+    originalSize: number;
+    compressedSize: number;
+    compressionRatio: number;
+    width?: number;
+    height?: number;
+    format?: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (selectedFile && selectedFile.type.startsWith("image/")) {
-      setFile(selectedFile)
-      setIsComplete(false)
-      setCompressedImage(null)
-      setCompressionStats(null)
-      setError(null)
+  const handleFileSelected = (files: File[]) => {
+    if (files.length > 0) {
+      const selectedFile = files[0];
+      setFile(selectedFile);
+      setIsComplete(false);
+      setCompressedImage(null);
+      setCompressionStats(null);
+      setError(null);
 
       // Create preview
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
-        setPreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(selectedFile)
+        setPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
     }
-  }
+  };
 
   const handleCompress = async () => {
-    if (!file) return
+    if (!file) return;
 
-    setIsProcessing(true)
-    setProgress(0)
-    setError(null)
+    setIsProcessing(true);
+    setProgress(0);
+    setError(null);
 
     // Simulate initial progress
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 90) {
-          clearInterval(progressInterval)
-          return 90
+          clearInterval(progressInterval);
+          return 90;
         }
-        return prev + 10
-      })
-    }, 200)
+        return prev + 10;
+      });
+    }, 200);
 
     try {
-      const formData = new FormData()
-      formData.append("image", file)
-      formData.append("quality", quality.toString())
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("quality", quality.toString());
 
       // Only append width/height if they are set
-      if (width) formData.append("width", width.toString())
-      if (height) formData.append("height", height.toString())
+      if (width) formData.append("width", width.toString());
+      if (height) formData.append("height", height.toString());
 
       // Handle format
       if (format !== "original") {
-        formData.append("format", format)
+        formData.append("format", format);
       }
 
       const response = await fetch("/api/compress", {
         method: "POST",
         body: formData,
-      })
+      });
 
-      clearInterval(progressInterval)
+      clearInterval(progressInterval);
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to compress image")
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to compress image");
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.dataUrl) {
-        setCompressedImage(data.dataUrl)
+        setCompressedImage(data.dataUrl);
 
         setCompressionStats({
           originalSize: data.originalSize,
@@ -114,67 +113,78 @@ export default function CompressImage() {
           width: data.width,
           height: data.height,
           format: data.format,
-        })
-        setIsComplete(true)
-        setProgress(100)
+        });
+        setIsComplete(true);
+        setProgress(100);
       } else {
-        throw new Error("No compressed image data returned")
+        throw new Error("No compressed image data returned");
       }
     } catch (err) {
-      console.error("Compression error:", err)
-      setError(err instanceof Error ? err.message : "An unknown error occurred")
+      console.error("Compression error:", err);
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   const handleReset = () => {
-    setFile(null)
-    setPreview(null)
-    setCompressedImage(null)
-    setCompressionStats(null)
-    setProgress(0)
-    setIsComplete(false)
-    setIsProcessing(false)
-    setError(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
-  }
+    setFile(null);
+    setPreview(null);
+    setCompressedImage(null);
+    setCompressionStats(null);
+    setProgress(0);
+    setIsComplete(false);
+    setIsProcessing(false);
+    setError(null);
+  };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B"
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB"
-    else return (bytes / 1048576).toFixed(2) + " MB"
-  }
+    if (bytes < 1024) return bytes + " B";
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
+    else return (bytes / 1048576).toFixed(2) + " MB";
+  };
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value === "" ? "" : Number.parseInt(e.target.value)
-    setWidth(value)
+    const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
+    setWidth(value);
 
-    if (maintainAspectRatio && file && preview && typeof value === "number" && value > 0) {
-      const img = new Image()
+    if (
+      maintainAspectRatio &&
+      file &&
+      preview &&
+      typeof value === "number" &&
+      value > 0
+    ) {
+      const img = new Image();
       img.onload = () => {
-        const aspectRatio = img.width / img.height
-        setHeight(Math.round(value / aspectRatio))
-      }
-      img.src = preview
+        const aspectRatio = img.width / img.height;
+        setHeight(Math.round(value / aspectRatio));
+      };
+      img.src = preview;
     }
-  }
+  };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value === "" ? "" : Number.parseInt(e.target.value)
-    setHeight(value)
+    const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
+    setHeight(value);
 
-    if (maintainAspectRatio && file && preview && typeof value === "number" && value > 0) {
-      const img = new Image()
+    if (
+      maintainAspectRatio &&
+      file &&
+      preview &&
+      typeof value === "number" &&
+      value > 0
+    ) {
+      const img = new Image();
       img.onload = () => {
-        const aspectRatio = img.width / img.height
-        setWidth(Math.round(value * aspectRatio))
-      }
-      img.src = preview
+        const aspectRatio = img.width / img.height;
+        setWidth(Math.round(value * aspectRatio));
+      };
+      img.src = preview;
     }
-  }
+  };
 
   return (
     <div className="container py-10 px-4 sm:px-6">
@@ -277,8 +287,8 @@ export default function CompressImage() {
                   </Label>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Leave empty to maintain original dimensions. Specifying only width or height will maintain aspect
-                  ratio.
+                  Leave empty to maintain original dimensions. Specifying only
+                  width or height will maintain aspect ratio.
                 </p>
               </div>
             </TabsContent>
@@ -292,25 +302,13 @@ export default function CompressImage() {
           )}
 
           {!file ? (
-            <div className="border-2 border-dashed rounded-lg p-8 text-center">
-              <div className="flex flex-col items-center">
-                <Upload className="h-10 w-10 mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Upload your image</h3>
-                <p className="text-sm text-muted-foreground mb-4">Drag and drop your file here, or click to browse</p>
-                <Button asChild>
-                  <label>
-                    Browse Files
-                    <input
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      ref={fileInputRef}
-                    />
-                  </label>
-                </Button>
-              </div>
-            </div>
+            <FileUploadZone
+              onFilesSelected={handleFileSelected}
+              accept="image/*"
+              buttonText="Select Image"
+              description="Drag and drop your image here, or click to browse"
+              disabled={isProcessing}
+            />
           ) : (
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -319,13 +317,13 @@ export default function CompressImage() {
                   <div className="border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center h-40 md:h-48">
                     {preview && (
                       <NextImage
-                      src={preview || "/placeholder.svg"}
-                      alt="Original"
-                      width={500} 
-                      height={500}
-                      className="max-w-full max-h-full object-contain"
-                      unoptimized
-                    />
+                        src={preview || "/placeholder.svg"}
+                        alt="Original"
+                        width={500}
+                        height={500}
+                        className="max-w-full max-h-full object-contain"
+                        unoptimized
+                      />
                     )}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -339,24 +337,29 @@ export default function CompressImage() {
                   <div className="border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center h-40 md:h-48">
                     {compressedImage ? (
                       <NextImage
-                      src={compressedImage || "/placeholder.svg"}
-                      alt="Compressed"
-                      width={500} 
-                      height={500} 
-                      className="max-w-full max-h-full object-contain"
-                      unoptimized 
-                    />
+                        src={compressedImage || "/placeholder.svg"}
+                        alt="Compressed"
+                        width={500}
+                        height={500}
+                        className="max-w-full max-h-full object-contain"
+                        unoptimized
+                      />
                     ) : (
                       <div className="text-center text-muted-foreground text-sm p-4">
-                        {isProcessing ? "Processing..." : "Compression preview will appear here"}
+                        {isProcessing
+                          ? "Processing..."
+                          : "Compression preview will appear here"}
                       </div>
                     )}
                   </div>
                   {compressionStats && (
                     <div className="text-sm text-muted-foreground">
-                      <p>Size: {formatFileSize(compressionStats.compressedSize)}</p>
                       <p>
-                        Dimensions: {compressionStats.width} × {compressionStats.height}
+                        Size: {formatFileSize(compressionStats.compressedSize)}
+                      </p>
+                      <p>
+                        Dimensions: {compressionStats.width} ×{" "}
+                        {compressionStats.height}
                       </p>
                       <p>Format: {compressionStats.format?.toUpperCase()}</p>
                     </div>
@@ -380,27 +383,36 @@ export default function CompressImage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-muted-foreground">Original Size:</p>
-                      <p className="font-medium">{formatFileSize(compressionStats.originalSize)}</p>
+                      <p className="font-medium">
+                        {formatFileSize(compressionStats.originalSize)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Compressed Size:</p>
-                      <p className="font-medium">{formatFileSize(compressionStats.compressedSize)}</p>
+                      <p className="font-medium">
+                        {formatFileSize(compressionStats.compressedSize)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Space Saved:</p>
                       <p className="font-medium">
-                        {formatFileSize(compressionStats.originalSize - compressionStats.compressedSize)}
+                        {formatFileSize(
+                          compressionStats.originalSize -
+                            compressionStats.compressedSize
+                        )}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Reduction:</p>
-                      <p className="font-medium">{compressionStats.compressionRatio.toFixed(2)}%</p>
+                      <p className="font-medium">
+                        {compressionStats.compressionRatio.toFixed(2)}%
+                      </p>
                     </div>
                   </div>
                 </div>
               )}
 
-<div className="flex gap-4 flex-wrap">
+              <div className="flex gap-4 flex-wrap">
                 {!isComplete ? (
                   <Button
                     className="flex-1"
@@ -440,7 +452,8 @@ export default function CompressImage() {
         <div className="bg-muted p-4 rounded-lg">
           <h3 className="font-medium mb-2">About Image Compression</h3>
           <p className="text-sm text-muted-foreground mb-2">
-            Our image compression tool reduces the file size while maintaining reasonable quality. This is useful for:
+            Our image compression tool reduces the file size while maintaining
+            reasonable quality. This is useful for:
           </p>
           <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
             <li>Uploading to websites and social media</li>
@@ -451,6 +464,5 @@ export default function CompressImage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

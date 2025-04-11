@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Upload,
   Download,
   Trash2,
   RefreshCw,
@@ -22,6 +21,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NextImage from "next/image";
+import { FileUploadZone } from "@/components/layout/file-upload-zone";
 
 export default function ResizeImage() {
   const [file, setFile] = useState<File | null>(null);
@@ -52,17 +52,12 @@ export default function ResizeImage() {
     format?: string;
   } | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Load original dimensions when file is selected
   useEffect(() => {
     if (file && preview) {
       const img = new Image();
       img.onload = () => {
         setOriginalWidth(img.width);
         setOriginalHeight(img.height);
-
-        // Set initial dimensions to original
         setWidth(img.width);
         setHeight(img.height);
       };
@@ -70,7 +65,6 @@ export default function ResizeImage() {
     }
   }, [file, preview]);
 
-  // Update dimensions when percentage changes
   useEffect(() => {
     if (
       resizeMethod === "percentage" &&
@@ -83,9 +77,9 @@ export default function ResizeImage() {
     }
   }, [percentage, originalWidth, originalHeight, resizeMethod]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type.startsWith("image/")) {
+  const handleFileSelected = (files: File[]) => {
+    if (files.length > 0) {
+      const selectedFile = files[0];
       setFile(selectedFile);
       setIsComplete(false);
       setResizedImage(null);
@@ -228,9 +222,6 @@ export default function ResizeImage() {
     setIsProcessing(false);
     setError(null);
     setPercentage(100);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -260,27 +251,13 @@ export default function ResizeImage() {
       <div className="max-w-full md:max-w-3xl mx-auto">
         <Card className="p-6 mb-6">
           {!file ? (
-            <div className="border-2 border-dashed rounded-lg p-8 text-center">
-              <div className="flex flex-col items-center">
-                <Upload className="h-10 w-10 mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">Upload your image</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Drag and drop your file here, or click to browse
-                </p>
-                <Button asChild>
-                  <label>
-                    Browse Files
-                    <input
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      ref={fileInputRef}
-                    />
-                  </label>
-                </Button>
-              </div>
-            </div>
+            <FileUploadZone
+              onFilesSelected={handleFileSelected}
+              accept="image/*"
+              buttonText="Select Image"
+              description="Drag and drop your image here, or click to browse"
+              disabled={isProcessing}
+            />
           ) : (
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

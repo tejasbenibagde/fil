@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,226 +22,142 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NextImage from "next/image";
 import { FileUploadZone } from "@/components/layout/file-upload-zone";
+import { useImageProcessing } from "@/hooks/use-image-processing";
 
 export default function ResizeImage() {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [resizedImage, setResizedImage] = useState<string | null>(null);
-  const [width, setWidth] = useState<number | "">("");
-  const [height, setHeight] = useState<number | "">("");
+  const {
+    file,
+    preview,
+    isProcessing,
+    progress,
+    isComplete,
+    error,
+    processedImage,
+    processedFileName,
+    stats,
+    options,
+    updateOption,
+    handleFileSelected,
+    handleProcess,
+    handleReset,
+    formatFileSize,
+  } = useImageProcessing({
+    apiEndpoint: "/api/resize",
+    initialOptions: {
+      format: "original",
+      maintainAspectRatio: true,
+      percentage: 100,
+      resizeMethod: "dimensions",
+    },
+  });
+
+  // Store original dimensions
   const [originalWidth, setOriginalWidth] = useState<number | null>(null);
   const [originalHeight, setOriginalHeight] = useState<number | null>(null);
-  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
-  const [format, setFormat] = useState("original");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [resizedFileName, setResizedFileName] = useState<string>("");
-  const [resizeMethod, setResizeMethod] = useState<"dimensions" | "percentage">(
-    "dimensions"
-  );
-  const [percentage, setPercentage] = useState(100);
-  const [resizeStats, setResizeStats] = useState<{
-    originalSize: number;
-    resizedSize: number;
-    originalWidth: number;
-    originalHeight: number;
-    width: number;
-    height: number;
-    format?: string;
-  } | null>(null);
 
+  // Use refs to track if dimensions have been set to avoid infinite loops
+  const dimensionsSet = useRef(false);
+
+  // Load original dimensions when file is selected
   useEffect(() => {
     if (file && preview) {
       const img = new Image();
       img.onload = () => {
         setOriginalWidth(img.width);
         setOriginalHeight(img.height);
-        setWidth(img.width);
-        setHeight(img.height);
+
+        // Only set dimensions if they haven't been set yet
+        if (!dimensionsSet.current) {
+          updateOption("width", img.width);
+          updateOption("height", img.height);
+          dimensionsSet.current = true;
+        }
       };
       img.src = preview;
+    } else {
+      // Reset the flag when file changes
+      dimensionsSet.current = false;
     }
-  }, [file, preview]);
+  }, [file, preview, updateOption]);
+
+  // Update dimensions when percentage changes - use a ref to track last percentage
+  const lastPercentage = useRef<number | null>(null);
 
   useEffect(() => {
+    const currentPercentage = options.percentage as number;
+
+    // Only update if percentage has changed and is different from last processed value
     if (
-      resizeMethod === "percentage" &&
+      options.resizeMethod === "percentage" &&
       originalWidth &&
       originalHeight &&
-      percentage
+      currentPercentage &&
+      lastPercentage.current !== currentPercentage
     ) {
-      setWidth(Math.round((originalWidth * percentage) / 100));
-      setHeight(Math.round((originalHeight * percentage) / 100));
-    }
-  }, [percentage, originalWidth, originalHeight, resizeMethod]);
+      lastPercentage.current = currentPercentage;
 
-  const handleFileSelected = (files: File[]) => {
-    if (files.length > 0) {
-      const selectedFile = files[0];
-      setFile(selectedFile);
-      setIsComplete(false);
-      setResizedImage(null);
-      setResizeStats(null);
-      setError(null);
+      const newWidth = Math.round((originalWidth * currentPercentage) / 100);
+      const newHeight = Math.round((originalHeight * currentPercentage) / 100);
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
+      updateOption("width", newWidth);
+      updateOption("height", newHeight);
     }
-  };
+  }, [
+    options.percentage,
+    originalWidth,
+    originalHeight,
+    options.resizeMethod,
+    updateOption,
+    options,
+  ]);
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
-    setWidth(value);
+    updateOption("width", value);
 
     if (
-      maintainAspectRatio &&
+      options.maintainAspectRatio &&
       originalWidth &&
       originalHeight &&
-      typeof value === "number" &&
-      value > 0
+      value !== ""
     ) {
       const aspectRatio = originalWidth / originalHeight;
-      setHeight(Math.round(value / aspectRatio));
+      updateOption("height", Math.round(Number(value) / aspectRatio));
     }
   };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
-    setHeight(value);
+    updateOption("height", value);
 
     if (
-      maintainAspectRatio &&
+      options.maintainAspectRatio &&
       originalWidth &&
       originalHeight &&
-      typeof value === "number" &&
-      value > 0
+      value !== ""
     ) {
       const aspectRatio = originalWidth / originalHeight;
-      setWidth(Math.round(value * aspectRatio));
+      updateOption("width", Math.round(Number(value) * aspectRatio));
     }
-  };
-
-  const handleResize = async () => {
-    if (!file || (!width && !height)) return;
-
-    setIsProcessing(true);
-    setProgress(0);
-    setError(null);
-
-    // Simulate initial progress
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return 90;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      if (width) formData.append("width", width.toString());
-      if (height) formData.append("height", height.toString());
-      formData.append("maintainAspectRatio", maintainAspectRatio.toString());
-
-      // Handle format
-      if (format !== "original") {
-        formData.append("format", format);
-      }
-
-      const response = await fetch("/api/resize", {
-        method: "POST",
-        body: formData,
-      });
-
-      clearInterval(progressInterval);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to resize image");
-      }
-
-      const data = await response.json();
-
-      if (data.dataUrl) {
-        setResizedImage(data.dataUrl);
-
-        // Generate a filename for download
-        const fileExt =
-          format === "original"
-            ? file.name.split(".").pop()
-            : format === "jpeg"
-            ? "jpg"
-            : format;
-        setResizedFileName(`resized-${Date.now()}.${fileExt}`);
-
-        setResizeStats({
-          originalSize: data.originalSize,
-          resizedSize: data.resizedSize,
-          originalWidth: data.originalWidth,
-          originalHeight: data.originalHeight,
-          width: data.width,
-          height: data.height,
-          format: data.format,
-        });
-        setIsComplete(true);
-        setProgress(100);
-      } else {
-        throw new Error("No resized image data returned");
-      }
-    } catch (err) {
-      console.error("Resize error:", err);
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleReset = () => {
-    setFile(null);
-    setPreview(null);
-    setResizedImage(null);
-    setResizeStats(null);
-    setWidth("");
-    setHeight("");
-    setOriginalWidth(null);
-    setOriginalHeight(null);
-    setProgress(0);
-    setIsComplete(false);
-    setIsProcessing(false);
-    setError(null);
-    setPercentage(100);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
-    else return (bytes / 1048576).toFixed(2) + " MB";
   };
 
   const toggleAspectRatio = () => {
-    setMaintainAspectRatio(!maintainAspectRatio);
+    updateOption("maintainAspectRatio", !options.maintainAspectRatio);
 
     // If turning aspect ratio back on, recalculate height based on current width
-    if (!maintainAspectRatio && originalWidth && originalHeight && width) {
+    if (
+      !options.maintainAspectRatio &&
+      originalWidth &&
+      originalHeight &&
+      options.width
+    ) {
       const aspectRatio = originalWidth / originalHeight;
-      setHeight(Math.round(Number(width) / aspectRatio));
+      updateOption("height", Math.round(Number(options.width) / aspectRatio));
     }
   };
 
   const handlePercentageChange = (values: number[]) => {
-    setPercentage(values[0]);
+    updateOption("percentage", values[0]);
   };
 
   return (
@@ -289,9 +205,9 @@ export default function ResizeImage() {
                 <div className="space-y-4">
                   <h3 className="font-medium">Resized Preview</h3>
                   <div className="border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center h-40 md:h-48">
-                    {resizedImage ? (
+                    {processedImage ? (
                       <NextImage
-                        src={resizedImage || "/placeholder.svg"}
+                        src={processedImage || "/placeholder.svg"}
                         alt="Resized"
                         width={500}
                         height={500}
@@ -306,24 +222,21 @@ export default function ResizeImage() {
                       </div>
                     )}
                   </div>
-                  {resizeStats && (
+                  {stats && (
                     <div className="text-sm text-muted-foreground">
-                      <p>Size: {formatFileSize(resizeStats.resizedSize)}</p>
+                      <p>Size: {formatFileSize(stats.processedSize)}</p>
                       <p>
-                        Dimensions: {resizeStats.width} × {resizeStats.height}{" "}
-                        px
+                        Dimensions: {stats.width} × {stats.height} px
                       </p>
-                      <p>Format: {resizeStats.format?.toUpperCase()}</p>
+                      <p>Format: {stats.format?.toUpperCase()}</p>
                     </div>
                   )}
                 </div>
               </div>
 
               <Tabs
-                defaultValue="dimensions"
-                onValueChange={(value) =>
-                  setResizeMethod(value as "dimensions" | "percentage")
-                }
+                defaultValue={options.resizeMethod as string}
+                onValueChange={(value) => updateOption("resizeMethod", value)}
               >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="dimensions">
@@ -341,19 +254,19 @@ export default function ResizeImage() {
                         onClick={toggleAspectRatio}
                         className="mr-2"
                         title={
-                          maintainAspectRatio
+                          options.maintainAspectRatio
                             ? "Unlock aspect ratio"
                             : "Lock aspect ratio"
                         }
                       >
-                        {maintainAspectRatio ? (
+                        {options.maintainAspectRatio ? (
                           <Lock className="h-4 w-4 text-primary" />
                         ) : (
                           <Unlock className="h-4 w-4" />
                         )}
                       </Button>
                       <span className="text-sm font-medium">
-                        {maintainAspectRatio
+                        {options.maintainAspectRatio
                           ? "Maintain aspect ratio"
                           : "Free resize"}
                       </span>
@@ -363,8 +276,8 @@ export default function ResizeImage() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          setWidth(originalWidth);
-                          setHeight(originalHeight);
+                          updateOption("width", originalWidth);
+                          updateOption("height", originalHeight);
                         }}
                       >
                         Reset to Original
@@ -378,7 +291,7 @@ export default function ResizeImage() {
                       <Input
                         id="width"
                         type="number"
-                        value={width}
+                        value={options.width || ""}
                         onChange={handleWidthChange}
                         disabled={isProcessing}
                         min="1"
@@ -389,7 +302,7 @@ export default function ResizeImage() {
                       <Input
                         id="height"
                         type="number"
-                        value={height}
+                        value={options.height || ""}
                         onChange={handleHeightChange}
                         disabled={isProcessing}
                         min="1"
@@ -402,10 +315,10 @@ export default function ResizeImage() {
                   <div className="space-y-4">
                     <div className="flex justify-between mb-2">
                       <span>Scale</span>
-                      <span>{percentage}%</span>
+                      <span>{options.percentage}%</span>
                     </div>
                     <Slider
-                      value={[percentage]}
+                      value={[Number(options.percentage)]}
                       onValueChange={handlePercentageChange}
                       min={1}
                       max={200}
@@ -418,9 +331,9 @@ export default function ResizeImage() {
                       <span>Larger</span>
                     </div>
 
-                    {width && height && (
+                    {options.width && options.height && (
                       <div className="text-sm text-muted-foreground mt-2">
-                        New dimensions: {width} × {height} px
+                        New dimensions: {options.width} × {options.height} px
                       </div>
                     )}
                   </div>
@@ -431,8 +344,8 @@ export default function ResizeImage() {
                 <div>
                   <h3 className="text-sm font-medium mb-2">Output Format</h3>
                   <RadioGroup
-                    value={format}
-                    onValueChange={setFormat}
+                    value={options.format as string}
+                    onValueChange={(value) => updateOption("format", value)}
                     className="flex flex-wrap gap-4"
                     disabled={isProcessing}
                   >
@@ -473,7 +386,7 @@ export default function ResizeImage() {
                 </div>
               )}
 
-              {resizeStats && (
+              {stats && (
                 <div className="bg-muted p-4 rounded-lg">
                   <h3 className="font-medium mb-2">Resize Results</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -482,26 +395,25 @@ export default function ResizeImage() {
                         Original Dimensions:
                       </p>
                       <p className="font-medium">
-                        {resizeStats.originalWidth} ×{" "}
-                        {resizeStats.originalHeight} px
+                        {stats.originalWidth} × {stats.originalHeight} px
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">New Dimensions:</p>
                       <p className="font-medium">
-                        {resizeStats.width} × {resizeStats.height} px
+                        {stats.width} × {stats.height} px
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Original Size:</p>
                       <p className="font-medium">
-                        {formatFileSize(resizeStats.originalSize)}
+                        {formatFileSize(stats.originalSize)}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">New Size:</p>
                       <p className="font-medium">
-                        {formatFileSize(resizeStats.resizedSize)}
+                        {formatFileSize(stats.processedSize)}
                       </p>
                     </div>
                   </div>
@@ -512,8 +424,10 @@ export default function ResizeImage() {
                 {!isComplete ? (
                   <Button
                     className="flex-1"
-                    onClick={handleResize}
-                    disabled={isProcessing || (!width && !height)}
+                    onClick={handleProcess}
+                    disabled={
+                      isProcessing || (!options.width && !options.height)
+                    }
                   >
                     {isProcessing ? (
                       <>
@@ -525,8 +439,11 @@ export default function ResizeImage() {
                     )}
                   </Button>
                 ) : (
-                  <Button className="flex-1" asChild>
-                    <a href={resizedImage || "#"} download={resizedFileName}>
+                  <Button className="w-full" asChild>
+                    <a
+                      href={processedImage || "#"}
+                      download={processedFileName}
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       Download Resized Image
                     </a>

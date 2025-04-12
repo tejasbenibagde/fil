@@ -2,7 +2,6 @@
 
 import type React from "react";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -16,151 +15,43 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import NextImage from "next/image";
 import { FileUploadZone } from "@/components/layout/file-upload-zone";
+import { useImageProcessing } from "@/hooks/use-image-processing";
 
 export default function CompressImage() {
-  const [file, setFile] = useState<File | null>(null);
-  const [quality, setQuality] = useState(80);
-  const [format, setFormat] = useState("original");
-  const [width, setWidth] = useState<number | "">("");
-  const [height, setHeight] = useState<number | "">("");
-  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [compressedImage, setCompressedImage] = useState<string | null>(null);
-  const [compressionStats, setCompressionStats] = useState<{
-    originalSize: number;
-    compressedSize: number;
-    compressionRatio: number;
-    width?: number;
-    height?: number;
-    format?: string;
-  } | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleFileSelected = (files: File[]) => {
-    if (files.length > 0) {
-      const selectedFile = files[0];
-      setFile(selectedFile);
-      setIsComplete(false);
-      setCompressedImage(null);
-      setCompressionStats(null);
-      setError(null);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
-  };
-
-  const handleCompress = async () => {
-    if (!file) return;
-
-    setIsProcessing(true);
-    setProgress(0);
-    setError(null);
-
-    // Simulate initial progress
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return 90;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("quality", quality.toString());
-
-      // Only append width/height if they are set
-      if (width) formData.append("width", width.toString());
-      if (height) formData.append("height", height.toString());
-
-      // Handle format
-      if (format !== "original") {
-        formData.append("format", format);
-      }
-
-      const response = await fetch("/api/compress", {
-        method: "POST",
-        body: formData,
-      });
-
-      clearInterval(progressInterval);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to compress image");
-      }
-
-      const data = await response.json();
-
-      if (data.dataUrl) {
-        setCompressedImage(data.dataUrl);
-
-        setCompressionStats({
-          originalSize: data.originalSize,
-          compressedSize: data.compressedSize,
-          compressionRatio: data.compressionRatio,
-          width: data.width,
-          height: data.height,
-          format: data.format,
-        });
-        setIsComplete(true);
-        setProgress(100);
-      } else {
-        throw new Error("No compressed image data returned");
-      }
-    } catch (err) {
-      console.error("Compression error:", err);
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleReset = () => {
-    setFile(null);
-    setPreview(null);
-    setCompressedImage(null);
-    setCompressionStats(null);
-    setProgress(0);
-    setIsComplete(false);
-    setIsProcessing(false);
-    setError(null);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
-    else return (bytes / 1048576).toFixed(2) + " MB";
-  };
+  const {
+    file,
+    preview,
+    isProcessing,
+    progress,
+    isComplete,
+    error,
+    processedImage,
+    processedFileName,
+    stats,
+    options,
+    updateOption,
+    handleFileSelected,
+    handleProcess,
+    handleReset,
+    formatFileSize,
+  } = useImageProcessing({
+    apiEndpoint: "/api/compress",
+    initialOptions: {
+      quality: 80,
+      format: "original",
+      maintainAspectRatio: true,
+    },
+  });
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
-    setWidth(value);
+    updateOption("width", value);
 
-    if (
-      maintainAspectRatio &&
-      file &&
-      preview &&
-      typeof value === "number" &&
-      value > 0
-    ) {
+    if (options.maintainAspectRatio && file && preview && value !== "") {
       const img = new Image();
       img.onload = () => {
         const aspectRatio = img.width / img.height;
-        setHeight(Math.round(value / aspectRatio));
+        updateOption("height", Math.round(Number(value) / aspectRatio));
       };
       img.src = preview;
     }
@@ -168,19 +59,13 @@ export default function CompressImage() {
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
-    setHeight(value);
+    updateOption("height", value);
 
-    if (
-      maintainAspectRatio &&
-      file &&
-      preview &&
-      typeof value === "number" &&
-      value > 0
-    ) {
+    if (options.maintainAspectRatio && file && preview && value !== "") {
       const img = new Image();
       img.onload = () => {
         const aspectRatio = img.width / img.height;
-        setWidth(Math.round(value * aspectRatio));
+        updateOption("width", Math.round(Number(value) * aspectRatio));
       };
       img.src = preview;
     }
@@ -202,11 +87,11 @@ export default function CompressImage() {
               <div>
                 <div className="flex justify-between mb-2">
                   <span>Quality</span>
-                  <span>{quality}%</span>
+                  <span>{options.quality}%</span>
                 </div>
                 <Slider
-                  value={[quality]}
-                  onValueChange={(value) => setQuality(value[0])}
+                  value={[options.quality as number]}
+                  onValueChange={(value) => updateOption("quality", value[0])}
                   min={10}
                   max={100}
                   step={5}
@@ -221,8 +106,8 @@ export default function CompressImage() {
               <div>
                 <h3 className="text-sm font-medium mb-2">Output Format</h3>
                 <RadioGroup
-                  value={format}
-                  onValueChange={setFormat}
+                  value={options.format as string}
+                  onValueChange={(value) => updateOption("format", value)}
                   className="flex flex-wrap gap-4"
                   disabled={isProcessing}
                 >
@@ -256,7 +141,7 @@ export default function CompressImage() {
                       id="width"
                       type="number"
                       placeholder="Auto"
-                      value={width}
+                      value={options.width || ""}
                       onChange={handleWidthChange}
                       disabled={isProcessing}
                     />
@@ -267,7 +152,7 @@ export default function CompressImage() {
                       id="height"
                       type="number"
                       placeholder="Auto"
-                      value={height}
+                      value={options.height || ""}
                       onChange={handleHeightChange}
                       disabled={isProcessing}
                     />
@@ -277,8 +162,10 @@ export default function CompressImage() {
                   <input
                     type="checkbox"
                     id="aspect-ratio"
-                    checked={maintainAspectRatio}
-                    onChange={(e) => setMaintainAspectRatio(e.target.checked)}
+                    checked={options.maintainAspectRatio as boolean}
+                    onChange={(e) =>
+                      updateOption("maintainAspectRatio", e.target.checked)
+                    }
                     className="mr-2"
                     disabled={isProcessing}
                   />
@@ -335,9 +222,9 @@ export default function CompressImage() {
                 <div className="space-y-4">
                   <h3 className="font-medium">Compressed Image</h3>
                   <div className="border rounded-lg overflow-hidden bg-muted/30 flex items-center justify-center h-40 md:h-48">
-                    {compressedImage ? (
+                    {processedImage ? (
                       <NextImage
-                        src={compressedImage || "/placeholder.svg"}
+                        src={processedImage || "/placeholder.svg"}
                         alt="Compressed"
                         width={500}
                         height={500}
@@ -352,16 +239,13 @@ export default function CompressImage() {
                       </div>
                     )}
                   </div>
-                  {compressionStats && (
+                  {stats && (
                     <div className="text-sm text-muted-foreground">
+                      <p>Size: {formatFileSize(stats.processedSize)}</p>
                       <p>
-                        Size: {formatFileSize(compressionStats.compressedSize)}
+                        Dimensions: {stats.width} × {stats.height}
                       </p>
-                      <p>
-                        Dimensions: {compressionStats.width} ×{" "}
-                        {compressionStats.height}
-                      </p>
-                      <p>Format: {compressionStats.format?.toUpperCase()}</p>
+                      <p>Format: {stats.format?.toUpperCase()}</p>
                     </div>
                   )}
                 </div>
@@ -377,35 +261,34 @@ export default function CompressImage() {
                 </div>
               )}
 
-              {compressionStats && (
+              {stats && (
                 <div className="bg-muted p-4 rounded-lg">
                   <h3 className="font-medium mb-2">Compression Results</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-muted-foreground">Original Size:</p>
                       <p className="font-medium">
-                        {formatFileSize(compressionStats.originalSize)}
+                        {formatFileSize(stats.originalSize)}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Compressed Size:</p>
                       <p className="font-medium">
-                        {formatFileSize(compressionStats.compressedSize)}
+                        {formatFileSize(stats.processedSize)}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Space Saved:</p>
                       <p className="font-medium">
                         {formatFileSize(
-                          compressionStats.originalSize -
-                            compressionStats.compressedSize
+                          stats.originalSize - stats.processedSize
                         )}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Reduction:</p>
                       <p className="font-medium">
-                        {compressionStats.compressionRatio.toFixed(2)}%
+                        {stats.compressionRatio?.toFixed(2)}%
                       </p>
                     </div>
                   </div>
@@ -416,7 +299,7 @@ export default function CompressImage() {
                 {!isComplete ? (
                   <Button
                     className="flex-1"
-                    onClick={handleCompress}
+                    onClick={handleProcess}
                     disabled={isProcessing}
                   >
                     {isProcessing ? (
@@ -430,7 +313,7 @@ export default function CompressImage() {
                   </Button>
                 ) : (
                   <Button className="flex-1" asChild>
-                    <a href={compressedImage || "#"} download>
+                    <a href={processedImage || "#"} download>
                       <Download className="mr-2 h-4 w-4" />
                       Download Compressed Image
                     </a>

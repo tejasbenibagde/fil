@@ -26,7 +26,6 @@ export default function CompressImage() {
     isComplete,
     error,
     processedImage,
-    processedFileName,
     stats,
     options,
     updateOption,

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileMinus, FilePlus, FileSearch, FileText, Upload } from "lucide-react"
+import { FileMinus, FilePlus, FileSearch, FileText } from "lucide-react"
 
 export default function PDFTools() {
   const pdfTools = [
@@ -54,20 +54,6 @@ export default function PDFTools() {
         ))}
       </div>
 
-      <Card className="w-full p-6 bg-muted/50">
-        <div className="flex flex-col items-center text-center">
-          <Upload className="h-12 w-12 mb-4 text-primary" />
-          <h2 className="text-2xl font-bold mb-2">Upload your PDF file</h2>
-          <p className="text-muted-foreground mb-4 max-w-md">
-            Select a tool above or upload your file here to get started. Your files are processed securely and
-            privately.
-          </p>
-          <Button size="lg">Choose File</Button>
-          <p className="text-xs text-muted-foreground mt-4">
-            Max file size: 100MB. Your files are never stored on our servers.
-          </p>
-        </div>
-      </Card>
     </div>
   )
 }

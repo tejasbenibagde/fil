@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileArchive, Upload, FolderArchive, FolderOpen } from "lucide-react"
+import { FileArchive, FolderArchive, FolderOpen } from "lucide-react"
 
 export default function ArchiveTools() {
   const archiveTools = [
@@ -47,21 +47,6 @@ export default function ArchiveTools() {
           </Card>
         ))}
       </div>
-
-      <Card className="w-full p-6 bg-muted/50">
-        <div className="flex flex-col items-center text-center">
-          <Upload className="h-12 w-12 mb-4 text-primary" />
-          <h2 className="text-2xl font-bold mb-2">Upload your files</h2>
-          <p className="text-muted-foreground mb-4 max-w-md">
-            Select a tool above or upload your files here to get started. Your files are processed securely and
-            privately.
-          </p>
-          <Button size="lg">Choose Files</Button>
-          <p className="text-xs text-muted-foreground mt-4">
-            Max file size: 500MB. Your files are never stored on our servers.
-          </p>
-        </div>
-      </Card>
     </div>
   )
 }

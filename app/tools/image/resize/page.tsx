@@ -2,27 +2,26 @@
 
 import type React from "react";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Progress } from "@/components/ui/progress";
+import { MaintainAspectRatio } from "@/components/layout/maintain-aspect-ratio";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Download,
   Trash2,
   RefreshCw,
-  Lock,
-  Unlock,
   AlertCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NextImage from "next/image";
 import { FileUploadZone } from "@/components/layout/file-upload-zone";
 import { useImageProcessing } from "@/hooks/use-image-processing";
+import { ProgressBar } from "@/components/layout/progress-bar";
 
 export default function ResizeImage() {
   const {
@@ -141,7 +140,7 @@ export default function ResizeImage() {
     }
   };
 
-  const toggleAspectRatio = () => {
+  const toggleAspectRatio = useCallback(() => {
     updateOption("maintainAspectRatio", !options.maintainAspectRatio);
 
     // If turning aspect ratio back on, recalculate height based on current width
@@ -154,7 +153,20 @@ export default function ResizeImage() {
       const aspectRatio = originalWidth / originalHeight;
       updateOption("height", Math.round(Number(options.width) / aspectRatio));
     }
-  };
+  }, [
+    options.maintainAspectRatio,
+    originalWidth,
+    originalHeight,
+    options.width,
+    updateOption,
+  ]);
+
+  const resetDimensions = useCallback(() => {
+    if (originalWidth && originalHeight) {
+      updateOption("width", originalWidth);
+      updateOption("height", originalHeight);
+    }
+  }, [originalWidth, originalHeight, updateOption]);
 
   const handlePercentageChange = (values: number[]) => {
     updateOption("percentage", values[0]);
@@ -246,44 +258,14 @@ export default function ResizeImage() {
                 </TabsList>
 
                 <TabsContent value="dimensions" className="space-y-4 pt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggleAspectRatio}
-                        className="mr-2"
-                        title={
-                          options.maintainAspectRatio
-                            ? "Unlock aspect ratio"
-                            : "Lock aspect ratio"
-                        }
-                      >
-                        {options.maintainAspectRatio ? (
-                          <Lock className="h-4 w-4 text-primary" />
-                        ) : (
-                          <Unlock className="h-4 w-4" />
-                        )}
-                      </Button>
-                      <span className="text-sm font-medium">
-                        {options.maintainAspectRatio
-                          ? "Maintain aspect ratio"
-                          : "Free resize"}
-                      </span>
-                    </div>
-                    {originalWidth && originalHeight && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          updateOption("width", originalWidth);
-                          updateOption("height", originalHeight);
-                        }}
-                      >
-                        Reset to Original
-                      </Button>
-                    )}
-                  </div>
+                  <MaintainAspectRatio
+                    maintainAspectRatio={options.maintainAspectRatio as boolean}
+                    toggleAspectRatio={toggleAspectRatio}
+                    originalWidth={originalWidth}
+                    originalHeight={originalHeight}
+                    resetDimensions={resetDimensions}
+                    disabled={isProcessing}
+                  />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -376,15 +358,7 @@ export default function ResizeImage() {
                 </Alert>
               )}
 
-              {isProcessing && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Processing...</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <Progress value={progress} />
-                </div>
-              )}
+              {isProcessing && <ProgressBar progress={progress} />}
 
               {stats && (
                 <div className="bg-muted p-4 rounded-lg">

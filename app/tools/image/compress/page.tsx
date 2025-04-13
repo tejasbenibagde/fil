@@ -1,12 +1,11 @@
 "use client";
 
 import type React from "react";
-
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Download, Trash2, RefreshCw } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,6 +15,8 @@ import { AlertCircle } from "lucide-react";
 import NextImage from "next/image";
 import { FileUploadZone } from "@/components/layout/file-upload-zone";
 import { useImageProcessing } from "@/hooks/use-image-processing";
+import { ProgressBar } from "@/components/layout/progress-bar";
+import { MaintainAspectRatio } from "@/components/layout/maintain-aspect-ratio";
 
 export default function CompressImage() {
   const {
@@ -41,6 +42,10 @@ export default function CompressImage() {
       maintainAspectRatio: true,
     },
   });
+
+  // For aspect ratio control
+  const originalWidth = stats?.originalWidth || null;
+  const originalHeight = stats?.originalHeight || null;
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value === "" ? "" : Number.parseInt(e.target.value);
@@ -69,6 +74,16 @@ export default function CompressImage() {
       img.src = preview;
     }
   };
+  const toggleAspectRatio = useCallback(() => {
+    updateOption("maintainAspectRatio", !options.maintainAspectRatio);
+  }, [options.maintainAspectRatio, updateOption]);
+
+  const resetDimensions = useCallback(() => {
+    if (originalWidth && originalHeight) {
+      updateOption("width", originalWidth);
+      updateOption("height", originalHeight);
+    }
+  }, [originalWidth, originalHeight, updateOption]);
 
   return (
     <div className="container py-10 px-4 sm:px-6">
@@ -133,7 +148,17 @@ export default function CompressImage() {
             <TabsContent value="advanced" className="space-y-4 pt-4">
               <div>
                 <h3 className="text-sm font-medium mb-2">Resize Dimensions</h3>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                {/* <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4"> */}
+                <MaintainAspectRatio
+                  maintainAspectRatio={options.maintainAspectRatio as boolean}
+                  toggleAspectRatio={toggleAspectRatio}
+                  originalWidth={originalWidth}
+                  originalHeight={originalHeight}
+                  resetDimensions={resetDimensions}
+                  disabled={isProcessing}
+                />
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4">
                   <div className="space-y-1 w-full sm:flex-1">
                     <Label htmlFor="width">Width (px)</Label>
                     <Input
@@ -156,21 +181,6 @@ export default function CompressImage() {
                       disabled={isProcessing}
                     />
                   </div>
-                </div>
-                <div className="flex items-center mt-2">
-                  <input
-                    type="checkbox"
-                    id="aspect-ratio"
-                    checked={options.maintainAspectRatio as boolean}
-                    onChange={(e) =>
-                      updateOption("maintainAspectRatio", e.target.checked)
-                    }
-                    className="mr-2"
-                    disabled={isProcessing}
-                  />
-                  <Label htmlFor="aspect-ratio" className="text-sm">
-                    Maintain aspect ratio
-                  </Label>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   Leave empty to maintain original dimensions. Specifying only
@@ -250,15 +260,7 @@ export default function CompressImage() {
                 </div>
               </div>
 
-              {isProcessing && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Processing...</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <Progress value={progress} />
-                </div>
-              )}
+              {isProcessing && <ProgressBar progress={progress} />}
 
               {stats && (
                 <div className="bg-muted p-4 rounded-lg">

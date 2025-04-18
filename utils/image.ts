@@ -1,12 +1,12 @@
-import sharp from "sharp";
+import type sharp from "sharp";
 
 export async function parseFormData(req: Request) {
   const formData = await req.formData();
   const file = formData.get("image") as File;
-  const width = parseInt(formData.get("width") as string) || undefined;
-  const height = parseInt(formData.get("height") as string) || undefined;
+  const width = Number.parseInt(formData.get("width") as string) || undefined;
+  const height = Number.parseInt(formData.get("height") as string) || undefined;
   const format = (formData.get("format") as string)?.toLowerCase() || "jpeg";
-  const quality = parseInt(formData.get("quality") as string) || 75;
+  const quality = Number.parseInt(formData.get("quality") as string) || 75;
   const maintainAspectRatio = formData.get("maintainAspectRatio") === "true";
 
   return { file, width, height, format, quality, maintainAspectRatio };

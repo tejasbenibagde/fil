@@ -339,10 +339,10 @@ export default function ConvertImage() {
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
                 {!isComplete ? (
                   <Button
-                    className="w-full"
+                    className="w-full sm:min-w-[610px] sm:w-auto"
                     onClick={handleProcess}
                     disabled={isProcessing}
                   >
@@ -356,7 +356,7 @@ export default function ConvertImage() {
                     )}
                   </Button>
                 ) : (
-                  <Button className="w-full" asChild>
+                  <Button className="w-full sm:auto" asChild>
                     <a
                       href={convertedImage || "#"}
                       download={`converted-${Date.now()}.${getFileExtension(

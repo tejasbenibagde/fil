@@ -30,6 +30,7 @@ export function MaintainAspectRatio({
           className="mr-2"
           title={maintainAspectRatio ? "Unlock aspect ratio" : "Lock aspect ratio"}
           disabled={disabled}
+          aria-label="toggle aspect ratio"
         >
           {maintainAspectRatio ? <Lock className="h-4 w-4 text-primary" /> : <Unlock className="h-4 w-4" />}
         </Button>

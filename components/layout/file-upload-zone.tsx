@@ -162,6 +162,7 @@ export function FileUploadZone({
 
         {/* Completely separate button without label wrapping */}
         <Button
+          aria-label="upload button"
           disabled={disabled}
           onClick={(e) => {
             e.stopPropagation();
@@ -173,6 +174,7 @@ export function FileUploadZone({
 
         {/* Hidden file input without label */}
         <input
+          data-testid="file-input"
           type="file"
           className="sr-only"
           accept={accept}

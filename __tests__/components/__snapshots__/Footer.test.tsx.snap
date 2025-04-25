@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer should render Footer component 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <footer
+        class="w-full border-t py-6 md:py-0"
+      >
+        <div
+          class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row"
+        >
+          <p
+            class="text-center text-sm leading-loose text-muted-foreground md:text-left"
+          >
+            © 
+            2025
+             Fil. All rights reserved. Open source under MIT license.
+          </p>
+          <div
+            class="flex items-center gap-4"
+          >
+            <a
+              class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+              href="/privacy"
+            >
+              Privacy
+            </a>
+            <a
+              class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+              href="/terms"
+            >
+              Terms
+            </a>
+            <a
+              class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+              href="/contact"
+            >
+              Contact
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>,
+  "container": <div>
+    <footer
+      class="w-full border-t py-6 md:py-0"
+    >
+      <div
+        class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row"
+      >
+        <p
+          class="text-center text-sm leading-loose text-muted-foreground md:text-left"
+        >
+          © 
+          2025
+           Fil. All rights reserved. Open source under MIT license.
+        </p>
+        <div
+          class="flex items-center gap-4"
+        >
+          <a
+            class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            href="/privacy"
+          >
+            Privacy
+          </a>
+          <a
+            class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            href="/terms"
+          >
+            Terms
+          </a>
+          <a
+            class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            href="/contact"
+          >
+            Contact
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

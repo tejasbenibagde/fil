@@ -11,7 +11,8 @@
     "lint": "next lint",
     "prepare": "husky",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [

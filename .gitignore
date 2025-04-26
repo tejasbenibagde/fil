@@ -43,3 +43,5 @@ next-env.d.ts
 .swc
 
 .vscode
+
+package-lock.json

@@ -28,7 +28,7 @@ exports[`renders homepage unchanged 1`] = `
               <p
                 class="mx-auto max-w-[700px] text-muted-foreground md:text-xl"
               >
-                A collection of free, open-source tools to work with your files. No ads, no tracking, just utilities.
+                A collection of free, open-source tools to work with your   files. No ads, no tracking, just utilities.
               </p>
             </div>
             <div
@@ -72,7 +72,7 @@ exports[`renders homepage unchanged 1`] = `
               <p
                 class="mx-auto max-w-[700px] text-muted-foreground md:text-xl"
               >
-                Choose from our wide range of file utilities to make your work easier.
+                Choose from our wide range of file utilities to make your work   easier.
               </p>
             </div>
             <div
@@ -518,7 +518,7 @@ exports[`renders homepage unchanged 1`] = `
               <p
                 class="mx-auto max-w-[700px] text-muted-foreground md:text-xl"
               >
-                All our tools are open source and free to use. You can contribute to the project on GitHub.
+                All our tools are open source and free to use. You can   contribute to the project on GitHub.
               </p>
             </div>
             <div

@@ -15,16 +15,27 @@ export default function CompressPDF() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [originalSize, setOriginalSize] = useState<number | null>(null);
+  const [compressedSize, setCompressedSize] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [compressedFileUrl, setCompressedFileUrl] = useState<string | null>(
     null
   );
+
+  const formatFileSize = (size: number): string => {
+    if (size < 1024 * 1024) {
+      return (size / 1024).toFixed(2) + " KB";
+    } else {
+      return (size / 1024 / 1024).toFixed(2) + " MB";
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile);
       setIsComplete(false);
+      setOriginalSize(selectedFile.size);
       setErrorMessage(null);
       setCompressedFileUrl(null);
     }
@@ -37,20 +48,36 @@ export default function CompressPDF() {
     setErrorMessage(null);
     setCompressedFileUrl(null);
     try {
+      // Simulate progress for now, replace with actual progress tracking if available
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev < 95) return prev + 5;
+          clearInterval(interval);
+          return prev;
+        });
+      }, 200);
+
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("quality", quality.toString());
+
       const response = await fetch("/api/pdf/compress", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
+        const newSize = response.headers.get("X-New-Size");
+        if (newSize) {
+          setCompressedSize(parseInt(newSize, 10));
+        }
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         setCompressedFileUrl(url);
         setIsComplete(true);
         setProgress(100);
       } else {
+        clearInterval(interval); // Clear interval on error
         const errorData = await response.json();
         setErrorMessage(errorData.error || "Failed to compress PDF");
       }
@@ -67,6 +94,8 @@ export default function CompressPDF() {
     setProgress(0);
     setIsComplete(false);
     setIsProcessing(false);
+    setOriginalSize(null);
+    setCompressedSize(null);
     setCompressedFileUrl(null);
     setErrorMessage(null);
   };
@@ -82,6 +111,7 @@ export default function CompressPDF() {
             <div className="mb-4">
               <Slider
                 defaultValue={[quality]}
+                value={[quality]}
                 max={100}
                 min={0}
                 step={1}
@@ -125,7 +155,7 @@ export default function CompressPDF() {
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{file.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                    {formatFileSize(file.size)}
                   </p>
                 </div>
                 <Button
@@ -174,12 +204,32 @@ export default function CompressPDF() {
                   </Button>
                 )}
               </div>
+
               {errorMessage && (
                 <Alert variant="destructive">
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>{errorMessage}</AlertDescription>
                 </Alert>
               )}
+
+              {isComplete &&
+                originalSize !== null &&
+                compressedSize !== null && (
+                  <div className="text-sm text-muted-foreground text-center space-y-1">
+                    <p>Original Size: {formatFileSize(originalSize)}</p>
+                    <p>Compressed Size: {formatFileSize(compressedSize)}</p>
+                    {originalSize > 0 && (
+                      <p>
+                        Compression Percentage:{" "}
+                        {(
+                          ((originalSize - compressedSize) / originalSize) *
+                          100
+                        ).toFixed(2)}
+                        %
+                      </p>
+                    )}
+                  </div>
+                )}
               {isComplete && (
                 <p className="text-sm text-center text-muted-foreground">
                   {" "}
